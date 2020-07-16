@@ -1,17 +1,21 @@
 #include <iostream>
+#include<chrono>
 
 using namespace std;
 
 
 int  n;
 int i, j;
+bool T=false;
 
 void addknight();
 void writeboard();
 
 
+
 int main() {
     setlocale(LC_ALL, "Russian");
+
 
     cout << "ВВедите размер шахматной доски" << endl;
     cout << "ВВедите кол-во строк, от 5 до 8" << endl;
@@ -22,7 +26,11 @@ int main() {
     cout << "Введите столбец" << endl;
     cin >> j;
     cout << n << "|" << i << "|" << j << endl;
+    auto startTime = chrono::high_resolution_clock::now();
     addknight();
+    auto finishTime = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::microseconds>(finishTime - startTime);
+    cout <<"Время:" <<duration.count() << endl;
 
     return 0;
 
@@ -36,6 +44,8 @@ int ktmov2[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
 
 int  move_num, d;
 void addknight() {
+    if (T == true)
+        return;
     register int a, b, e;
 
     /* пометить клетку как посещенную и запомнить координаты клетки */
@@ -49,7 +59,8 @@ void addknight() {
         /* если все ходы сделаны, печатаем их */
         if (move_num >=n*n) {
             writeboard();
-            exit(0);
+            T = true;
+            return;
         }
 
         /* определяем колонку и строку для следующего хода */
