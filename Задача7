@@ -7,6 +7,7 @@ using namespace std;
 int  n;
 int i, j;
 bool T=false;
+int starti, startj;
 
 void addknight();
 void writeboard();
@@ -17,19 +18,41 @@ int main() {
     setlocale(LC_ALL, "Russian");
 
 
-    cout << "ВВедите размер(n) шахматной доски,от 5 до 8 " << endl;
+    cout << "ВВедите размер шахматной доски" << endl;
+    cout << "ВВедите кол-во строк, от 5 до 8" << endl;
     cin >> n;
     cout << "Введите начальное положение коня" << endl;
     cout << "Введите строку" << endl;
     cin >> i;
+    starti = i;
     cout << "Введите столбец" << endl;
     cin >> j;
+    startj = j;
     cout << n << "|" << i << "|" << j << endl;
+   /* for (i = 0; i <= n - 1; i++)
+    {
+        for (j = 0; j <= n - 1; j++)
+        {
+            auto startTime = chrono::high_resolution_clock::now();
+            starti = i;
+            startj = j;
+            addknight();
+            auto finishTime = chrono::high_resolution_clock::now();
+            auto duration = chrono::duration_cast<chrono::microseconds>(finishTime - startTime);
+            cout << "Время:" << duration.count() << endl;
+        }
+       
+
+    }*/
+
+
     auto startTime = chrono::high_resolution_clock::now();
     addknight();
     auto finishTime = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::microseconds>(finishTime - startTime);
-    cout <<"Время:" <<duration.count() << endl;
+    cout << "Время:" << duration.count() << endl;
+
+
 
     return 0;
 
@@ -42,10 +65,14 @@ int ktmov1[8] = { -2, -1, 1, 2, 2, 1, -1, -2 };
 int ktmov2[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
 
 int  move_num, d;
+
+
+
 void addknight() {
+    
     if (T == true)
         return;
-    register int a, b, e;
+    register int a, b, e,h;
 
     /* пометить клетку как посещенную и запомнить координаты клетки */
     arr[i][j] = 1;
@@ -57,35 +84,67 @@ void addknight() {
     for (a = 0; a <= 7; a++) {
         /* если все ходы сделаны, печатаем их */
         if (move_num >=n*n) {
-            writeboard();
-            T = true;
-            return;
+            for (h = 0; h <= 7; h++)
+            {
+                if ((i + ktmov1[h] == starti) && (j + ktmov2[h] == startj))
+                {
+                    writeboard();
+                    T = true;
+                    return;
+
+                }
+                
+                    
+
+
+            }
+                
         }
+
+
 
         /* определяем колонку и строку для следующего хода */
         b = i + ktmov1[a];
         e = j + ktmov2[a];
 
+        
         /* проверяем, что после выполенения хода конь остается на шахматной доске */
         if (b < 0 || b > n-1 || e < 0 || e > n-1)
             continue;
 
+       
         /* проверяем, были ли мы уже в этой клетке */
         if (arr[b][e] == 1)
             continue;
         i = b; j = e;
+
+
         addknight();
+
+        
+
     }
 
+   
     /* уменьшить счетчик ходов и попробовать сделать следующий ход */
     move_num--;
+
+  
 
     /* освобождаем клетку, ранее занятую конем */
     arr[row[move_num]][col[move_num]] = 0;
     move_num--;  /* пробуем сделать следующий ход */
     i = row[move_num]; j = col[move_num];
     move_num++;
+
+    
+
+    
 }
+
+
+
+
 
 void writeboard() {
     int a;
@@ -101,7 +160,9 @@ void writeboard() {
     //}
     for (a = 0; a <=(n*n)-1; a++) {
         //gotoxy(col[a] * 3 + 1, 12 + row[a]);
+        
         printf("%d,%d\n",row[a], col[a] );
+        cout << "ДА" << endl;
         //getch();
     }
 }
